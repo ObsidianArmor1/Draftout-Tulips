@@ -399,3 +399,45 @@ canvas {
     border-left: 2px solid #000000;
     padding-left: 12px;
 }
+
+/* Closest Patches Results Card Grid */
+.closest-patches-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.patch-result-card {
+    border: 2px solid #000000;
+    background-color: #FFFFFF;
+    padding: 12px;
+    cursor: pointer;
+}
+
+.patch-result-card:hover {
+    background-color: #EEEEEE;
+}
+
+.patch-result-coords {
+    font-size: 22px; /* Huge text for absolute clarity in copy-paste or quick reading */
+    font-weight: bold;
+    font-family: monospace;
+    color: #FF0000; /* High-contrast flat red */
+    margin-bottom: 4px;
+}
+
+.patch-result-meta {
+    font-size: 13px;
+    line-height: 1.5;
+    color: #222222;
+}
+
+.patch-result-meta code {
+    background-color: #EEEEEE;
+    padding: 1px 4px;
+    border: 1px solid #CCCCCC;
+}
+
+.hidden {
+    display: none !important;
+}

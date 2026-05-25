@@ -384,8 +384,69 @@ document.getElementById("track-btn").addEventListener("click", () => {
     offsetX = canvas.width / 2 - playerPos.x * zoom;
     offsetY = canvas.height / 2 - playerPos.z * zoom;
 
+    updateClosestPatchesUI();
     drawMap();
 });
+
+// Dynamic closest patches visual output inside the sidebar
+function updateClosestPatchesUI() {
+    if (!playerPos) return;
+
+    const container = document.getElementById("closest-patches-container");
+    const section = document.getElementById("closest-patches-section");
+    if (!container || !section) return;
+
+    // Calculate distance to closest block inside the bounding box for all fields
+    const sorted = [...fieldsData].map(field => {
+        // Clamp player coordinates to the Snug Bounding Box edges of the field to find closest possible block
+        const closestX = Math.round(Math.max(field.x - field.wx/2, Math.min(field.x + field.wx/2, playerPos.x)));
+        const closestZ = Math.round(Math.max(field.z - field.wz/2, Math.min(field.z + field.wz/2, playerPos.z)));
+        const dist = Math.round(Math.hypot(closestX - playerPos.x, closestZ - playerPos.z));
+        return { ...field, closestX, closestZ, dist };
+    }).sort((a, b) => a.dist - b.dist);
+
+    container.innerHTML = "";
+    
+    // Output top 3 closest fields in huge text
+    sorted.slice(0, 3).forEach((field, index) => {
+        const purity = field.noise < -0.9 ? 100.0 : Math.max(75.0, 100.0 + (field.noise - (-0.8)) * 250);
+        const yRangeText = (field.minY !== -1 && field.maxY !== -1) ? `${field.minY}-${field.maxY}` : "None";
+
+        const card = document.createElement("div");
+        card.className = "patch-result-card";
+        
+        // Add single-click copy capability directly to the sidebar card
+        card.addEventListener("click", () => {
+            const coordText = `${field.closestX} ${field.closestZ}`;
+            navigator.clipboard.writeText(coordText).then(() => {
+                hudTrackingLabel.textContent = "COPIED TO CLIPBOARD";
+                hudTrackingVal.textContent = coordText;
+                hudTrackingContainer.classList.add("active");
+                activeFieldId = field.id;
+                
+                // Track this block
+                playerPos = { x: field.closestX, z: field.closestZ };
+                offsetX = canvas.width / 2 - playerPos.x * zoom;
+                offsetY = canvas.height / 2 - playerPos.z * zoom;
+                
+                updateClosestPatchesUI();
+                drawMap();
+            });
+        });
+
+        card.innerHTML = `
+            <div class="patch-result-coords">${field.closestX} ${field.closestZ}</div>
+            <div class="patch-result-meta">
+                <strong>${field.dist}</strong> blocks away<br>
+                Valid Y: <code>${yRangeText}</code><br>
+                Purity: <code>${purity.toFixed(0)}%</code>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+
+    section.classList.remove("hidden");
+}
 
 // Global Paste Listener for F3+C Minecraft Coordinate Parsing
 window.addEventListener("paste", (e) => {
@@ -417,6 +478,7 @@ window.addEventListener("paste", (e) => {
         hudTrackingVal.textContent = `${x} ${z}`;
         hudTrackingContainer.classList.add("active");
         
+        updateClosestPatchesUI();
         drawMap();
     }
 });
