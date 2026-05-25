@@ -469,6 +469,16 @@ function updateClosestPatchesUI() {
         const purity = field.noise < -0.9 ? 100.0 : Math.max(75.0, 100.0 + (field.noise - (-0.8)) * 250);
         const yRangeText = (field.minY !== -1 && field.maxY !== -1) ? `${field.minY}-${field.maxY}` : "None";
 
+        // Calculate direction and angle to closest patch from current player position
+        const dx = field.closestX - playerPos.x;
+        const dz = field.closestZ - playerPos.z;
+        let angle = Math.atan2(-dx, dz) * 180 / Math.PI;
+        let normAngle = angle < 0 ? angle + 360 : angle;
+        
+        const dirs = ["S", "SW", "W", "NW", "N", "NE", "E", "SE"];
+        const directionAbbr = dirs[Math.round(normAngle / 45) % 8];
+        const angleText = normAngle.toFixed(2);
+
         const card = document.createElement("div");
         card.className = "patch-result-card";
         
@@ -492,11 +502,11 @@ function updateClosestPatchesUI() {
         });
 
         card.innerHTML = `
-            <div class="patch-result-coords">${field.closestX} ${field.closestZ}</div>
+            <div class="patch-result-coords">${field.closestX}, ${field.closestZ}</div>
             <div class="patch-result-meta">
                 <strong>${field.dist}</strong> blocks away<br>
-                Valid Y: <code>${yRangeText}</code><br>
-                Purity: <code>${purity.toFixed(0)}%</code>
+                Valid Y: <code>${yRangeText}</code> | Purity: <code>${purity.toFixed(0)}%</code><br>
+                ${field.dist > 0 ? `Direction: <strong>${directionAbbr}</strong> (<code>${angleText}°</code>)` : `<strong>You are here!</strong>`}
             </div>
         `;
         container.appendChild(card);
