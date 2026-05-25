@@ -384,6 +384,40 @@ document.getElementById("track-btn").addEventListener("click", () => {
     drawMap();
 });
 
+// Global Paste Listener for F3+C Minecraft Coordinate Parsing
+window.addEventListener("paste", (e) => {
+    const pastedText = (e.clipboardData || window.clipboardData).getData("text");
+    if (!pastedText) return;
+
+    // Matches standard '/execute ... run tp @s X Y Z' or simple '/tp @s X Y Z' or standalone coords
+    const regex = /(?:run tp @s|tp @s)\s+([-\d.]+)\s+([-\d.]+)\s+([-\d.]+)/i;
+    const match = pastedText.match(regex);
+    
+    if (match) {
+        const x = Math.round(parseFloat(match[1]));
+        const z = Math.round(parseFloat(match[3])); // Z is the 3rd coordinate (Y is the 2nd)
+        
+        playerPos = { x, z };
+        
+        // Update input fields for visual feedback
+        const xInput = document.getElementById("player-x");
+        const zInput = document.getElementById("player-z");
+        if (xInput) xInput.value = x;
+        if (zInput) zInput.value = z;
+
+        // Center map view on player
+        offsetX = canvas.width / 2 - playerPos.x * zoom;
+        offsetY = canvas.height / 2 - playerPos.z * zoom;
+
+        // Show feedback toast in HUD
+        hudTrackingLabel.textContent = "TRACKED VIA F3+C CLIPBOARD";
+        hudTrackingVal.textContent = `${x} ${z}`;
+        hudTrackingContainer.classList.add("active");
+        
+        drawMap();
+    }
+});
+
 // App Startup
 resizeCanvas();
 resetView();
