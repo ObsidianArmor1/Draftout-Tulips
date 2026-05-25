@@ -168,6 +168,26 @@ function drawMap() {
             return;
         }
 
+        // Draw dynamic organic shape of the patch up to 20,000 blocks in real-time!
+        if (field.pts && field.pts.length > 0) {
+            // Glowing transparent pink color
+            ctx.fillStyle = "rgba(255, 64, 129, 0.4)";
+            
+            // Grid cell size is 8x8 blocks, so diameter is 8 blocks (radius is 4 blocks)
+            // Scale the drawing radius, ensuring at least 1.2px size so they remain visible when zoomed out
+            const ptRadius = Math.max(1.2, 4.5 * zoom);
+            
+            for (let k = 0; k < field.pts.length; k += 2) {
+                const ox = field.pts[k] * 8;
+                const oz = field.pts[k+1] * 8;
+                const ptPix = toPixel(field.x + ox, field.z + oz);
+                
+                ctx.beginPath();
+                ctx.arc(ptPix.x, ptPix.y, ptRadius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
         const isHovered = field.id === activeFieldId;
 
         // Bounding box dimensions on screen (generous 10px minimum for easy clicks)
