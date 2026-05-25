@@ -253,17 +253,34 @@ function drawMap() {
         ctx.arc(p.x, p.y, 9, 0, Math.PI * 2);
         ctx.stroke();
 
-        // Connect player to closest 5 fields with dotted lines to keep grid clean
-        const sorted = [...fieldsData].sort((a, b) => {
-            return Math.hypot(a.x - playerPos.x, a.z - playerPos.z) - Math.hypot(b.x - playerPos.x, b.z - playerPos.z);
-        });
+        // Connect player to the 3 closest patches with prominent dashed lines pointing to the exact closest blocks!
+        const sorted = [...fieldsData].map(field => {
+            const closestX = Math.round(Math.max(field.x - field.wx/2, Math.min(field.x + field.wx/2, playerPos.x)));
+            const closestZ = Math.round(Math.max(field.z - field.wz/2, Math.min(field.z + field.wz/2, playerPos.z)));
+            const dist = Math.round(Math.hypot(closestX - playerPos.x, closestZ - playerPos.z));
+            return { ...field, closestX, closestZ, dist };
+        }).sort((a, b) => a.dist - b.dist);
 
-        for (let i = 0; i < Math.min(5, sorted.length); i++) {
+        for (let i = 0; i < Math.min(3, sorted.length); i++) {
             const field = sorted[i];
-            const pField = toPixel(field.x, field.z);
-            ctx.strokeStyle = "#999999";
-            ctx.lineWidth = 0.8;
-            ctx.setLineDash([2, 4]);
+            const pField = toPixel(field.closestX, field.closestZ); // Point to exact closest block!
+            
+            // Visual weight hierarchy: closer = thicker, darker, and more prominent dashed line!
+            let opacity, lineWidth;
+            if (i === 0) {
+                lineWidth = 2.8;
+                opacity = 0.85;
+            } else if (i === 1) {
+                lineWidth = 1.8;
+                opacity = 0.55;
+            } else {
+                lineWidth = 1.0;
+                opacity = 0.30;
+            }
+            
+            ctx.strokeStyle = `rgba(0, 0, 0, ${opacity})`;
+            ctx.lineWidth = lineWidth;
+            ctx.setLineDash([4, 4]); // Clean 4px dashed lines
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(pField.x, pField.y);
@@ -482,21 +499,14 @@ function updateClosestPatchesUI() {
         const card = document.createElement("div");
         card.className = "patch-result-card";
         
-        // Add single-click copy capability directly to the sidebar card
+        // Add single-click copy capability directly to the sidebar card (without moving playerPos!)
         card.addEventListener("click", () => {
             const coordText = `${field.closestX} ${field.closestZ}`;
             navigator.clipboard.writeText(coordText).then(() => {
                 hudTrackingLabel.textContent = "COPIED TO CLIPBOARD";
                 hudTrackingVal.textContent = coordText;
                 hudTrackingContainer.classList.add("active");
-                activeFieldId = field.id;
-                
-                // Track this block
-                playerPos = { x: field.closestX, z: field.closestZ };
-                offsetX = canvas.width / 2 - playerPos.x * zoom;
-                offsetY = canvas.height / 2 - playerPos.z * zoom;
-                
-                updateClosestPatchesUI();
+                activeFieldId = field.id; // Highlight this field visually on the map
                 drawMap();
             });
         });
