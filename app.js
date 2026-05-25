@@ -268,14 +268,14 @@ function drawMap() {
             // Visual weight hierarchy: closer = thicker, darker, and more prominent dashed line!
             let opacity, lineWidth;
             if (i === 0) {
-                lineWidth = 2.8;
-                opacity = 0.85;
+                lineWidth = 4.5;
+                opacity = 0.95;
             } else if (i === 1) {
-                lineWidth = 1.8;
-                opacity = 0.55;
+                lineWidth = 3.0;
+                opacity = 0.70;
             } else {
-                lineWidth = 1.0;
-                opacity = 0.30;
+                lineWidth = 1.8;
+                opacity = 0.45;
             }
             
             ctx.strokeStyle = `rgba(0, 0, 0, ${opacity})`;
@@ -320,7 +320,7 @@ container.addEventListener("mousedown", (e) => {
 window.addEventListener("mouseup", (e) => {
     isDragging = false;
     
-    if (dragMoveCount < 5) {
+    if (e.target === canvas && dragMoveCount < 5) {
         const rect = canvas.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
@@ -500,7 +500,8 @@ function updateClosestPatchesUI() {
         card.className = "patch-result-card";
         
         // Add single-click copy capability directly to the sidebar card (without moving playerPos!)
-        card.addEventListener("click", () => {
+        card.addEventListener("click", (e) => {
+            e.stopPropagation();
             const coordText = `${field.closestX} ${field.closestZ}`;
             navigator.clipboard.writeText(coordText).then(() => {
                 hudTrackingLabel.textContent = "COPIED TO CLIPBOARD";
