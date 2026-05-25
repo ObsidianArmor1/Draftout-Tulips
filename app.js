@@ -253,7 +253,7 @@ function drawMap() {
         ctx.arc(p.x, p.y, 9, 0, Math.PI * 2);
         ctx.stroke();
 
-        // Connect player to the 3 closest patches with prominent dashed lines pointing to the exact closest blocks!
+        const lineData = [];
         const sorted = [...fieldsData].map(field => {
             const closestX = Math.round(Math.max(field.x - field.wx/2, Math.min(field.x + field.wx/2, playerPos.x)));
             const closestZ = Math.round(Math.max(field.z - field.wz/2, Math.min(field.z + field.wz/2, playerPos.z)));
@@ -289,9 +289,38 @@ function drawMap() {
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(pField.x, pField.y);
             ctx.stroke();
+
+            lineData.push({ field, pField, opacity });
         }
         ctx.setLineDash([]); // Reset
         ctx.lineCap = "butt"; // Reset
+
+        // Draw midpoint distance labels on top of all lines
+        lineData.forEach(({ field, pField, opacity }) => {
+            const midX = (p.x + pField.x) / 2;
+            const midY = (p.y + pField.y) / 2;
+            
+            const labelText = `${field.dist} blocks`;
+            ctx.font = "bold 10px monospace";
+            const textWidth = ctx.measureText(labelText).width;
+            const padX = 5;
+            const padY = 3;
+            
+            // Draw box background
+            ctx.fillStyle = "#FFFFFF";
+            ctx.fillRect(midX - textWidth/2 - padX, midY - 6 - padY, textWidth + padX*2, 12 + padY*2);
+            
+            // Draw box border
+            ctx.strokeStyle = `rgba(0, 0, 0, ${opacity * 0.8})`;
+            ctx.lineWidth = 1;
+            ctx.strokeRect(midX - textWidth/2 - padX, midY - 6 - padY, textWidth + padX*2, 12 + padY*2);
+            
+            // Draw text
+            ctx.fillStyle = "#000000";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(labelText, midX, midY);
+        });
     }
 }
 
