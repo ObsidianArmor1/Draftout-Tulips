@@ -125,6 +125,7 @@ code, pre {
 }
 
 .field input {
+    width: 100%; /* Ensure the input box never overflows the sidebar grid width */
     background-color: #FFFFFF;
     border: 1px solid #999999;
     padding: 6px 8px;
