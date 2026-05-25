@@ -51,6 +51,7 @@ code, pre {
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    overflow-x: hidden; /* Hide any unwanted horizontal scrollbars */
     flex-shrink: 0;
     z-index: 10;
 }
@@ -380,4 +381,17 @@ canvas {
 
 #hud-tracking-container.active .hud-val {
     color: var(--color-success);
+}
+
+/* Tip Box styling */
+.tip-box {
+    margin-top: 12px;
+    font-size: 10px;
+    color: #555555;
+    border: 1px dashed #CCCCCC;
+    padding: 10px;
+    background-color: #FAFAFA;
+    line-height: 1.4;
+    word-wrap: break-word;
+    word-break: break-word;
 }
