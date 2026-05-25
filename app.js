@@ -381,12 +381,46 @@ document.getElementById("track-btn").addEventListener("click", () => {
         z: parseInt(zInput)
     };
 
-    offsetX = canvas.width / 2 - playerPos.x * zoom;
-    offsetY = canvas.height / 2 - playerPos.z * zoom;
-
     updateClosestPatchesUI();
     drawMap();
 });
+
+// Auto-adjust zoom level and view offset to fit player and the closest 3 patches inside the viewport
+function fitViewToPlayerAndPatches(closestPatches) {
+    if (!playerPos || closestPatches.length === 0) return;
+
+    let minX = playerPos.x;
+    let maxX = playerPos.x;
+    let minZ = playerPos.z;
+    let maxZ = playerPos.z;
+
+    closestPatches.forEach(p => {
+        minX = Math.min(minX, p.closestX);
+        maxX = Math.max(maxX, p.closestX);
+        minZ = Math.min(minZ, p.closestZ);
+        maxZ = Math.max(maxZ, p.closestZ);
+    });
+
+    const width = maxX - minX;
+    const height = maxZ - minZ;
+
+    // Generous padding (120px) to ensure coordinate labels and HUD overlays fit comfortably without overlap
+    const padding = 120;
+    const maxFitWidth = canvas.width - padding * 2;
+    const maxFitHeight = canvas.height - padding * 2;
+
+    const requiredZoomX = maxFitWidth / Math.max(20, width);
+    const requiredZoomZ = maxFitHeight / Math.max(20, height);
+
+    let targetZoom = Math.min(requiredZoomX, requiredZoomZ);
+    
+    // Clamp the auto-zoom to a comfortable reading range
+    targetZoom = Math.max(0.003, Math.min(0.2, targetZoom));
+
+    zoom = targetZoom;
+    offsetX = canvas.width / 2 - ((minX + maxX) / 2) * zoom;
+    offsetY = canvas.height / 2 - ((minZ + maxZ) / 2) * zoom;
+}
 
 // Dynamic closest patches visual output inside the sidebar
 function updateClosestPatchesUI() {
@@ -404,6 +438,9 @@ function updateClosestPatchesUI() {
         const dist = Math.round(Math.hypot(closestX - playerPos.x, closestZ - playerPos.z));
         return { ...field, closestX, closestZ, dist };
     }).sort((a, b) => a.dist - b.dist);
+
+    // Auto-adjust viewport layout to fit the player and top 3 closest patches perfectly!
+    fitViewToPlayerAndPatches(sorted.slice(0, 3));
 
     container.innerHTML = "";
     
