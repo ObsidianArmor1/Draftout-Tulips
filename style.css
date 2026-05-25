@@ -1,0 +1,383 @@
+/* Minimalist and Bland Styling - Flat, Non-fancy, Print-like Design */
+:root {
+    --bg-main: #FFFFFF;
+    --bg-panel: #F4F4F4;
+    --bg-card: #FFFFFF;
+    --border-color: #000000;
+    --text-primary: #000000;
+    --text-secondary: #333333;
+    --text-muted: #666666;
+    
+    --color-primary: #FF0000; /* Flat Red */
+    --color-secondary: #0000FF; /* Flat Blue */
+    --color-success: #008000; /* Flat Green */
+}
+
+/* Reset to basic layouts */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border-radius: 0 !important; /* Force rectangular, no rounded corners */
+    transition: none !important; /* Disable all animations and transitions */
+    box-shadow: none !important; /* Disable all glows and shadows */
+    text-shadow: none !important;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+}
+
+code, pre {
+    font-family: monospace;
+}
+
+.app-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* Sidebar (Left Panel) */
+.sidebar {
+    width: 350px;
+    background-color: var(--bg-panel);
+    border-right: 2px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    flex-shrink: 0;
+    z-index: 10;
+}
+
+.sidebar-header {
+    padding: 20px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.logo-icon {
+    font-size: 20px;
+}
+
+.logo h1 {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--text-primary);
+}
+
+.subtitle {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* Panel Sections */
+.panel-section {
+    padding: 20px;
+    border-bottom: 1px solid #CCCCCC;
+}
+
+.panel-section h2 {
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+}
+
+.description {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.input-group {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.field {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.field label {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.field input {
+    background-color: #FFFFFF;
+    border: 1px solid #999999;
+    padding: 6px 8px;
+    color: var(--text-primary);
+    font-size: 12px;
+    font-family: monospace;
+}
+
+.field input:focus {
+    outline: 2px solid var(--color-secondary);
+}
+
+/* Buttons (Bland rectangular boxes) */
+button {
+    width: 100%;
+    background-color: #E1E1E1;
+    border: 1px solid #767676;
+    color: #000000;
+    padding: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #D0D0D0;
+    border-color: #000000;
+}
+
+button:active {
+    background-color: #B5B5B5;
+}
+
+/* Result Box */
+.result-box {
+    margin-top: 12px;
+    background-color: #FFFFFF;
+    border: 1px solid #000000;
+    padding: 12px;
+}
+
+.result-box.hidden {
+    display: none;
+}
+
+.result-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+#result-status-icon {
+    font-size: 8px;
+}
+
+.result-header h3 {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.result-details {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.result-details code {
+    background-color: #EEEEEE;
+    padding: 1px 4px;
+    border: 1px solid #CCCCCC;
+}
+
+/* State Styling */
+.state-tulip {
+    border: 2px solid var(--color-primary);
+    background-color: #FFF0F5;
+}
+.state-tulip #result-status-icon {
+    color: var(--color-primary);
+}
+.state-tulip h3 {
+    color: var(--color-primary);
+}
+
+.state-general {
+    border: 1px solid var(--text-primary);
+}
+.state-general #result-status-icon {
+    color: var(--text-muted);
+}
+
+.state-error {
+    border: 2px solid #FF0000;
+    background-color: #FFE6E6;
+}
+.state-error #result-status-icon {
+    color: #FF0000;
+}
+.state-error h3 {
+    color: #FF0000;
+}
+
+/* Fields List */
+.list-section {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    border-bottom: none;
+}
+
+.fields-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    overflow-y: auto;
+}
+
+.field-item {
+    background-color: #FFFFFF;
+    border: 1px solid #CCCCCC;
+    padding: 8px 12px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.field-item:hover {
+    border-color: #000000;
+    background-color: #F9F9F9;
+}
+
+.field-item.active {
+    border: 2px solid #000000;
+    background-color: #EEEEEE;
+}
+
+.field-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.field-name {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.field-coords {
+    font-size: 10px;
+    font-family: monospace;
+    color: var(--text-muted);
+}
+
+.field-meta {
+    text-align: right;
+}
+
+.field-dist {
+    font-size: 11px;
+    font-weight: bold;
+    color: var(--color-success);
+    font-family: monospace;
+}
+
+.field-intensity {
+    font-size: 9px;
+    font-family: monospace;
+    color: var(--text-muted);
+}
+
+/* Map Area (Right Container) */
+.map-area {
+    flex-grow: 1;
+    height: 100vh;
+    background-color: #FFFFFF;
+    position: relative;
+}
+
+.canvas-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: default;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Canvas UI overlays */
+.map-controls {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 10;
+}
+
+.map-controls button {
+    background-color: #FFFFFF;
+    border: 1px solid #000000;
+    color: #000000;
+    font-size: 14px;
+    font-weight: bold;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.map-controls button:hover {
+    background-color: #EEEEEE;
+}
+
+.hud {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    gap: 12px;
+    z-index: 10;
+}
+
+.hud-item {
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 1px solid #000000;
+    padding: 6px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.hud-label {
+    font-size: 9px;
+    color: var(--text-muted);
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.hud-val {
+    font-size: 12px;
+    font-family: monospace;
+    font-weight: bold;
+    color: #000000;
+}
+
+#hud-tracking-container.active .hud-val {
+    color: var(--color-success);
+}
