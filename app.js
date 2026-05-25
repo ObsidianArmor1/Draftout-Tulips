@@ -210,7 +210,10 @@ function drawMap() {
             // Expected tulip purity (based on noise intensity relative to the -0.8 threshold)
             const purity = field.noise < -0.9 ? 100.0 : Math.max(75.0, 100.0 + (field.noise - (-0.8)) * 250);
 
-            ctx.fillText(`Coords: ${field.x}, ${field.z}`, p.x, p.y - h / 2 - 28);
+            // Valid Y range display
+            const yRangeText = (field.minY !== -1 && field.maxY !== -1) ? ` | Y: ${field.minY}-${field.maxY}` : " | Y: None";
+
+            ctx.fillText(`Coords: ${field.x}, ${field.z}${yRangeText}`, p.x, p.y - h / 2 - 28);
             ctx.fillText(`Spawn Prob: ${spawnProb.toFixed(1)}% (${N} chunks)`, p.x, p.y - h / 2 - 16);
             ctx.fillText(`Expected Purity: ${purity.toFixed(1)}%`, p.x, p.y - h / 2 - 4);
         }
