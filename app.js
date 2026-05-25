@@ -641,20 +641,8 @@ function updateClosestPatchesUI() {
             <div class="patch-result-coords">${field.closestX}, ${field.closestZ}</div>
             <div class="patch-result-distance">${field.dist} blocks away</div>
             <div class="patch-result-meta">
-                <div class="patch-result-meta-row">
-                    <span class="patch-result-label">Valid Y:</span>
-                    <span class="patch-result-badge highlight-y">${yRangeText}</span>
-                    <span class="patch-result-meta-divider">|</span>
-                    <span class="patch-result-label">Purity:</span>
-                    <span class="patch-result-badge">${purity.toFixed(0)}%</span>
-                </div>
-                <div class="patch-result-meta-row">
-                    ${field.dist > 0 ? `
-                        <span class="patch-result-label">Direction:</span>
-                        <span class="patch-result-badge highlight-dir">${directionAbbr}</span>
-                        <span class="patch-result-angle">(${angleText}°)</span>
-                    ` : `<span class="patch-result-badge">You are here!</span>`}
-                </div>
+                Valid Y: <strong class="text-highlight-y">${yRangeText}</strong> <span class="meta-divider">|</span> Purity: <strong>${purity.toFixed(0)}%</strong><br>
+                ${field.dist > 0 ? `Direction: <strong class="text-highlight-dir">${directionAbbr}</strong> <span class="patch-result-angle">(${angleText}°)</span>` : `<strong>You are here!</strong>`}
             </div>
         `;
         container.appendChild(card);
