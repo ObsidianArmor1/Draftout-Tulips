@@ -384,15 +384,18 @@ canvas {
     color: var(--color-success);
 }
 
-/* Tip Box styling */
-.tip-box {
-    margin-top: 12px;
-    font-size: 12px;
-    color: #444444;
-    border: 1px dashed #CCCCCC;
-    padding: 10px;
-    background-color: #FAFAFA;
-    line-height: 1.4;
-    word-wrap: break-word;
-    word-break: break-word;
+/* Info list styling */
+.info-list {
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.info-list li {
+    font-size: 13px;
+    line-height: 1.5;
+    color: #222222;
+    border-left: 2px solid #000000;
+    padding-left: 12px;
 }
