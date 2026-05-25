@@ -539,8 +539,8 @@ function updateClosestPatchesUI() {
 
         card.innerHTML = `
             <div class="patch-result-coords">${field.closestX}, ${field.closestZ}</div>
+            <div class="patch-result-distance">${field.dist} blocks away</div>
             <div class="patch-result-meta">
-                <strong>${field.dist}</strong> blocks away<br>
                 Valid Y: <code>${yRangeText}</code> | Purity: <code>${purity.toFixed(0)}%</code><br>
                 ${field.dist > 0 ? `Direction: <strong>${directionAbbr}</strong> (<code>${angleText}°</code>)` : `<strong>You are here!</strong>`}
             </div>

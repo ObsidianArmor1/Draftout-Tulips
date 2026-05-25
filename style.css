@@ -45,7 +45,7 @@ code, pre {
 
 /* Sidebar (Left Panel) */
 .sidebar {
-    width: 350px;
+    width: 380px; /* Increased from 350px to prevent any coordinate or card text cut-offs */
     background-color: var(--bg-panel);
     border-right: 2px solid var(--border-color);
     display: flex;
@@ -423,7 +423,14 @@ canvas {
     font-weight: bold;
     font-family: monospace;
     color: #FF0000; /* High-contrast flat red */
-    margin-bottom: 4px;
+    margin-bottom: 2px;
+}
+
+.patch-result-distance {
+    font-size: 18px; /* High legibility and prominence for players */
+    font-weight: bold;
+    color: var(--color-success); /* Green for clear, positive visual target identification */
+    margin-bottom: 6px;
 }
 
 .patch-result-meta {
