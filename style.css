@@ -469,7 +469,7 @@ canvas {
     background-color: var(--map-controls-bg);
     border: 1px solid var(--hud-border);
     color: var(--hud-text);
-    font-size: 14px;
+    font-size: 18px;
     font-weight: bold;
     width: 32px;
     height: 32px;
