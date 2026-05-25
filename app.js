@@ -75,7 +75,7 @@ function drawMap() {
 
     ctx.strokeStyle = "#E5E5E5";
     ctx.lineWidth = 1;
-    ctx.font = "9px monospace";
+    ctx.font = "11px monospace";
     ctx.fillStyle = "#666666";
 
     // Vertical grid lines
@@ -194,7 +194,7 @@ function drawMap() {
         // On hover, display coords, spawn probability, and expected tulip purity
         if (isHovered) {
             ctx.fillStyle = "#000000";
-            ctx.font = "bold 9px monospace";
+            ctx.font = "bold 11px monospace";
             ctx.textAlign = "center";
             ctx.textBaseline = "bottom";
 

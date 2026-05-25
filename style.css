@@ -79,7 +79,7 @@ code, pre {
 }
 
 .subtitle {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--text-muted);
 }
 
@@ -90,7 +90,7 @@ code, pre {
 }
 
 .panel-section h2 {
-    font-size: 12px;
+    font-size: 14px;
     font-weight: bold;
     color: var(--text-primary);
     margin-bottom: 12px;
@@ -118,7 +118,7 @@ code, pre {
 }
 
 .field label {
-    font-size: 10px;
+    font-size: 11px;
     color: var(--text-muted);
     font-weight: bold;
     text-transform: uppercase;
@@ -130,7 +130,7 @@ code, pre {
     border: 1px solid #999999;
     padding: 6px 8px;
     color: var(--text-primary);
-    font-size: 12px;
+    font-size: 14px;
     font-family: monospace;
 }
 
@@ -144,8 +144,8 @@ button {
     background-color: #E1E1E1;
     border: 1px solid #767676;
     color: #000000;
-    padding: 8px;
-    font-size: 12px;
+    padding: 10px;
+    font-size: 14px;
     font-weight: bold;
     cursor: pointer;
 }
@@ -367,14 +367,14 @@ canvas {
 }
 
 .hud-label {
-    font-size: 9px;
+    font-size: 11px;
     color: var(--text-muted);
     font-weight: bold;
     text-transform: uppercase;
 }
 
 .hud-val {
-    font-size: 12px;
+    font-size: 14px;
     font-family: monospace;
     font-weight: bold;
     color: #000000;
@@ -387,8 +387,8 @@ canvas {
 /* Tip Box styling */
 .tip-box {
     margin-top: 12px;
-    font-size: 10px;
-    color: #555555;
+    font-size: 12px;
+    color: #444444;
     border: 1px dashed #CCCCCC;
     padding: 10px;
     background-color: #FAFAFA;
