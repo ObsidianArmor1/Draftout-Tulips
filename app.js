@@ -268,28 +268,30 @@ function drawMap() {
             // Visual weight hierarchy: closer = thicker, darker, and more prominent dashed line!
             let opacity, lineWidth, dashPattern;
             if (i === 0) {
-                lineWidth = 2.5;
+                lineWidth = 3.0;
                 opacity = 0.90;
-                dashPattern = [6, 6];
+                dashPattern = [6, 8];
             } else if (i === 1) {
-                lineWidth = 1.6;
-                opacity = 0.60;
-                dashPattern = [5, 5];
+                lineWidth = 2.0;
+                opacity = 0.65;
+                dashPattern = [5, 7];
             } else {
-                lineWidth = 1.0;
-                opacity = 0.35;
-                dashPattern = [4, 4];
+                lineWidth = 1.2;
+                opacity = 0.40;
+                dashPattern = [4, 6];
             }
             
-            ctx.strokeStyle = `rgba(50, 50, 50, ${opacity})`;
+            ctx.strokeStyle = `rgba(0, 0, 0, ${opacity})`;
             ctx.lineWidth = lineWidth;
-            ctx.setLineDash(dashPattern); // Clean, proportional dashed lines
+            ctx.lineCap = "round";
+            ctx.setLineDash(dashPattern);
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(pField.x, pField.y);
             ctx.stroke();
         }
         ctx.setLineDash([]); // Reset
+        ctx.lineCap = "butt"; // Reset
     }
 }
 
@@ -330,7 +332,27 @@ window.addEventListener("mouseup", (e) => {
         
         const clickedField = getFieldAtPosition(mouseX, mouseY);
         if (clickedField) {
-            const coordText = `${clickedField.x} ${clickedField.z}`;
+            let coordText;
+            if (playerPos) {
+                // We have a tracked player position! Clamp to the closest possible block, then compute direction and angle
+                const closestX = Math.round(Math.max(clickedField.x - clickedField.wx/2, Math.min(clickedField.x + clickedField.wx/2, playerPos.x)));
+                const closestZ = Math.round(Math.max(clickedField.z - clickedField.wz/2, Math.min(clickedField.z + clickedField.wz/2, playerPos.z)));
+                
+                const dx = closestX - playerPos.x;
+                const dz = closestZ - playerPos.z;
+                let angle = Math.atan2(-dx, dz) * 180 / Math.PI;
+                let normAngle = angle < 0 ? angle + 360 : angle;
+                
+                const dirs = ["S", "SW", "W", "NW", "N", "NE", "E", "SE"];
+                const directionAbbr = dirs[Math.round(normAngle / 45) % 8];
+                const angleText = normAngle.toFixed(2);
+                
+                coordText = `${closestX} ${closestZ} ${directionAbbr} ${angleText}`;
+            } else {
+                // No tracking active, just copy center coords
+                coordText = `${clickedField.x} ${clickedField.z}`;
+            }
+
             navigator.clipboard.writeText(coordText).then(() => {
                 hudTrackingLabel.textContent = "COPIED TO CLIPBOARD";
                 hudTrackingVal.textContent = coordText;
@@ -505,11 +527,8 @@ function updateClosestPatchesUI() {
         // Add single-click copy capability directly to the sidebar card (without moving playerPos!)
         card.addEventListener("click", (e) => {
             e.stopPropagation();
-            const coordText = `${field.closestX} ${field.closestZ}`;
-            const copyContent = field.dist > 0 
-                ? `${coordText} (Direction: ${directionAbbr}, Angle: ${angleText}°)`
-                : coordText;
-            navigator.clipboard.writeText(copyContent).then(() => {
+            const coordText = `${field.closestX} ${field.closestZ} ${directionAbbr} ${angleText}`;
+            navigator.clipboard.writeText(coordText).then(() => {
                 hudTrackingLabel.textContent = "COPIED TO CLIPBOARD";
                 hudTrackingVal.textContent = coordText;
                 hudTrackingContainer.classList.add("active");
