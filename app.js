@@ -13,6 +13,40 @@ let playerPos = null; // {x, z}
 let customMarker = null; // {x, z, label, noise, isTulip}
 let activeFieldId = null;
 
+// Dark Mode Theme Management
+function isDarkMode() {
+    return document.documentElement.getAttribute('data-theme') === 'dark';
+}
+
+function getThemeColor(varName) {
+    return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+}
+
+function updateToggleIcon() {
+    const btn = document.getElementById('theme-toggle');
+    if (btn) btn.textContent = isDarkMode() ? '☀' : '☾';
+}
+
+// Initialize toggle button
+document.addEventListener('DOMContentLoaded', () => {
+    updateToggleIcon();
+    const btn = document.getElementById('theme-toggle');
+    if (btn) {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (isDarkMode()) {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('tulipmap-theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('tulipmap-theme', 'dark');
+            }
+            updateToggleIcon();
+            drawMap();
+        });
+    }
+});
+
 // Load organic noise overlay image
 const noiseOverlay = new Image();
 noiseOverlay.src = 'tulip_noise_overlay.png';
@@ -60,10 +94,21 @@ function toBlock(px, py) {
     return { x, z };
 }
 
-// Draw Grid Lines, Rings, Axes, and Markers (Minimalist Theme)
+// Draw Grid Lines, Rings, Axes, and Markers (Theme-Aware)
 function drawMap() {
-    // Clear screen to pure white
-    ctx.fillStyle = "#FFFFFF";
+    const dark = isDarkMode();
+    const canvasBg = getThemeColor('--canvas-bg');
+    const canvasGrid = getThemeColor('--canvas-grid');
+    const canvasAxis = getThemeColor('--canvas-axis');
+    const canvasText = getThemeColor('--canvas-text');
+    const canvasTextOutline = getThemeColor('--canvas-text-outline');
+    const canvasLabelBg = getThemeColor('--canvas-label-bg');
+    const canvasRingMajor = getThemeColor('--canvas-ring-major');
+    const canvasRingMinor = getThemeColor('--canvas-ring-minor');
+    const lineColor = dark ? 'rgba(255, 255, 255,' : 'rgba(0, 0, 0,';
+
+    // Clear screen to theme background
+    ctx.fillStyle = canvasBg;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Draw grid lines
@@ -73,7 +118,7 @@ function drawMap() {
     const startZ = Math.floor(toBlock(0, 0).z / gridSpacing) * gridSpacing;
     const endZ = Math.ceil(toBlock(0, canvas.height).z / gridSpacing) * gridSpacing;
 
-    ctx.strokeStyle = "#E5E5E5";
+    ctx.strokeStyle = canvasGrid;
     ctx.lineWidth = 1;
 
     // Vertical grid lines
@@ -89,16 +134,16 @@ function drawMap() {
             ctx.textAlign = "left";
             ctx.textBaseline = "top";
             
-            // Draw a high-contrast white outline for absolute visibility against any background
-            ctx.strokeStyle = "#FFFFFF";
+            // Draw a high-contrast outline for absolute visibility against any background
+            ctx.strokeStyle = canvasTextOutline;
             ctx.lineWidth = 4;
             ctx.strokeText(`${x}X`, p1.x + 6, 8);
             
-            ctx.fillStyle = "#000000";
+            ctx.fillStyle = canvasText;
             ctx.fillText(`${x}X`, p1.x + 6, 8);
             
             // Restore grid stroke style for subsequent lines
-            ctx.strokeStyle = "#E5E5E5";
+            ctx.strokeStyle = canvasGrid;
             ctx.lineWidth = 1;
         }
     }
@@ -116,22 +161,22 @@ function drawMap() {
             ctx.textAlign = "left";
             ctx.textBaseline = "bottom";
             
-            // Draw a high-contrast white outline for absolute visibility against any background
-            ctx.strokeStyle = "#FFFFFF";
+            // Draw a high-contrast outline for absolute visibility against any background
+            ctx.strokeStyle = canvasTextOutline;
             ctx.lineWidth = 4;
             ctx.strokeText(`${z}Z`, 8, p1.y - 6);
             
-            ctx.fillStyle = "#000000";
+            ctx.fillStyle = canvasText;
             ctx.fillText(`${z}Z`, 8, p1.y - 6);
             
             // Restore grid stroke style for subsequent lines
-            ctx.strokeStyle = "#E5E5E5";
+            ctx.strokeStyle = canvasGrid;
             ctx.lineWidth = 1;
         }
     }
 
-    // Main Axes (Solid black)
-    ctx.strokeStyle = "#000000";
+    // Main Axes
+    ctx.strokeStyle = canvasAxis;
     ctx.lineWidth = 1.5;
     const centerPix = toPixel(0, 0);
     
@@ -154,11 +199,11 @@ function drawMap() {
         
         if (radius === 2000 || radius === 5000) {
             ctx.lineWidth = 2.0;
-            ctx.strokeStyle = "#888888";
+            ctx.strokeStyle = canvasRingMajor;
             ctx.setLineDash([]);
         } else {
             ctx.lineWidth = 0.8;
-            ctx.strokeStyle = "#CCCCCC";
+            ctx.strokeStyle = canvasRingMinor;
             ctx.setLineDash([2, 4]);
         }
         
@@ -176,11 +221,11 @@ function drawMap() {
     }
 
     // Draw Spawn Point (Simple green dot)
-    ctx.fillStyle = "#008000";
+    ctx.fillStyle = getThemeColor('--color-success');
     ctx.beginPath();
     ctx.arc(centerPix.x, centerPix.y, 4, 0, Math.PI * 2);
     ctx.fill();
-    ctx.strokeStyle = "#000000";
+    ctx.strokeStyle = canvasAxis;
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.arc(centerPix.x, centerPix.y, 7, 0, Math.PI * 2);
@@ -196,8 +241,8 @@ function drawMap() {
 
         // Draw dynamic organic shape of the patch up to 20,000 blocks in real-time!
         if (field.pts && field.pts.length > 0) {
-            // Glowing transparent pink color
-            ctx.fillStyle = "rgba(255, 64, 129, 0.4)";
+            // Glowing transparent pink color (slightly brighter in dark mode)
+            ctx.fillStyle = dark ? "rgba(255, 80, 150, 0.55)" : "rgba(255, 64, 129, 0.4)";
             
             // Grid cell size is 8x8 blocks, so diameter is 8 blocks (radius is 4 blocks)
             // Scale the drawing radius, ensuring at least 1.2px size so they remain visible when zoomed out
@@ -221,25 +266,25 @@ function drawMap() {
         const h = Math.max(10, field.wz * zoom);
         
         // Fill box: completely transparent by default, very light transparent red ONLY when hovered!
-        ctx.fillStyle = isHovered ? "rgba(255, 0, 0, 0.15)" : "rgba(0, 0, 0, 0.0)";
+        ctx.fillStyle = isHovered ? (dark ? "rgba(255, 80, 80, 0.20)" : "rgba(255, 0, 0, 0.15)") : "rgba(0, 0, 0, 0.0)";
         ctx.fillRect(p.x - w / 2, p.y - h / 2, w, h);
 
         // Bounding box outline: light-gray dashed border when not hovered, bold solid red when hovered
-        ctx.strokeStyle = isHovered ? "#FF0000" : "rgba(0, 0, 0, 0.15)";
+        ctx.strokeStyle = isHovered ? getThemeColor('--color-primary') : getThemeColor('--canvas-bbox-default');
         ctx.lineWidth = isHovered ? 2.0 : 1.0;
         ctx.setLineDash(isHovered ? [] : [2, 2]);
         ctx.strokeRect(p.x - w / 2, p.y - h / 2, w, h);
         ctx.setLineDash([]);
 
         // Small black center dot marker
-        ctx.fillStyle = isHovered ? "#FF0000" : "rgba(0, 0, 0, 0.3)";
+        ctx.fillStyle = isHovered ? getThemeColor('--color-primary') : getThemeColor('--canvas-dot-default');
         ctx.beginPath();
         ctx.arc(p.x, p.y, isHovered ? 3 : 1.5, 0, Math.PI * 2);
         ctx.fill();
 
         // On hover, display coords, spawn probability, and expected tulip purity
         if (isHovered) {
-            ctx.fillStyle = "#000000";
+            ctx.fillStyle = canvasText;
             ctx.font = "bold 11px monospace";
             ctx.textAlign = "center";
             ctx.textBaseline = "bottom";
@@ -269,11 +314,11 @@ function drawMap() {
     if (playerPos) {
         const p = toPixel(playerPos.x, playerPos.z);
         
-        ctx.fillStyle = "#008000";
+        ctx.fillStyle = getThemeColor('--color-success');
         ctx.beginPath();
         ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
         ctx.fill();
-        ctx.strokeStyle = "#000000";
+        ctx.strokeStyle = canvasAxis;
         ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.arc(p.x, p.y, 9, 0, Math.PI * 2);
@@ -307,7 +352,7 @@ function drawMap() {
                 dashPattern = [4, 6];
             }
             
-            ctx.strokeStyle = `rgba(0, 0, 0, ${opacity})`;
+            ctx.strokeStyle = `${lineColor} ${opacity})`;
             ctx.lineWidth = lineWidth;
             ctx.lineCap = "round";
             ctx.setLineDash(dashPattern);
@@ -333,16 +378,16 @@ function drawMap() {
             const padY = 3;
             
             // Draw box background
-            ctx.fillStyle = "#FFFFFF";
+            ctx.fillStyle = canvasLabelBg;
             ctx.fillRect(midX - textWidth/2 - padX, midY - 6 - padY, textWidth + padX*2, 12 + padY*2);
             
             // Draw box border
-            ctx.strokeStyle = `rgba(0, 0, 0, ${opacity * 0.8})`;
+            ctx.strokeStyle = `${lineColor} ${opacity * 0.8})`;
             ctx.lineWidth = 1;
             ctx.strokeRect(midX - textWidth/2 - padX, midY - 6 - padY, textWidth + padX*2, 12 + padY*2);
             
             // Draw text
-            ctx.fillStyle = "#000000";
+            ctx.fillStyle = canvasText;
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
             ctx.fillText(labelText, midX, midY);

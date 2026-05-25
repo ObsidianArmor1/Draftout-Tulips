@@ -5,16 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minecraft 26.1.1: Tulip Fields Coordinate Map</title>
     <link rel="stylesheet" href="style.css">
+    <script>
+        // Apply saved theme immediately before first paint to prevent flash
+        (function() {
+            const saved = localStorage.getItem('tulipmap-theme');
+            if (saved === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+        })();
+    </script>
 </head>
 <body>
     <div class="app-container">
         <!-- Sidebar Panel -->
         <aside class="sidebar">
             <header class="sidebar-header">
-                <div class="logo">
-                    <h1>TULIP MAP</h1>
+                <div class="sidebar-header-left">
+                    <div class="logo">
+                        <h1>TULIP MAP</h1>
+                    </div>
+                    <p class="subtitle">Plains biome flower finder</p>
                 </div>
-                <p class="subtitle">Plains biome flower finder</p>
+                <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode">☀</button>
             </header>
 
             <!-- Player Coordinate Tracker -->
