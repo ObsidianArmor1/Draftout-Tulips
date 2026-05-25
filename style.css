@@ -41,6 +41,7 @@ code, pre {
     display: flex;
     height: 100vh;
     width: 100vw;
+    overflow: hidden; /* Prevent horizontal container overflow shift */
 }
 
 /* Sidebar (Left Panel) */
@@ -299,7 +300,8 @@ button:active {
 
 /* Map Area (Right Container) */
 .map-area {
-    flex-grow: 1;
+    flex: 1; /* Automatically grow and shrink correctly */
+    min-width: 0; /* CRITICAL: allows the flex item to shrink below content size, preventing horizontal overflows */
     height: 100vh;
     background-color: #FFFFFF;
     position: relative;

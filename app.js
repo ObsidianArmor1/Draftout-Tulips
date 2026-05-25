@@ -75,8 +75,6 @@ function drawMap() {
 
     ctx.strokeStyle = "#E5E5E5";
     ctx.lineWidth = 1;
-    ctx.font = "11px monospace";
-    ctx.fillStyle = "#666666";
 
     // Vertical grid lines
     for (let x = startX; x <= endX; x += gridSpacing) {
@@ -87,7 +85,21 @@ function drawMap() {
         ctx.stroke();
         
         if (x !== 0) {
-            ctx.fillText(`${x}X`, p1.x + 5, 15);
+            ctx.font = "bold 13px monospace";
+            ctx.textAlign = "left";
+            ctx.textBaseline = "top";
+            
+            // Draw a high-contrast white outline for absolute visibility against any background
+            ctx.strokeStyle = "#FFFFFF";
+            ctx.lineWidth = 4;
+            ctx.strokeText(`${x}X`, p1.x + 6, 8);
+            
+            ctx.fillStyle = "#000000";
+            ctx.fillText(`${x}X`, p1.x + 6, 8);
+            
+            // Restore grid stroke style for subsequent lines
+            ctx.strokeStyle = "#E5E5E5";
+            ctx.lineWidth = 1;
         }
     }
 
@@ -100,7 +112,21 @@ function drawMap() {
         ctx.stroke();
 
         if (z !== 0) {
-            ctx.fillText(`${z}Z`, 5, p1.y - 5);
+            ctx.font = "bold 13px monospace";
+            ctx.textAlign = "left";
+            ctx.textBaseline = "bottom";
+            
+            // Draw a high-contrast white outline for absolute visibility against any background
+            ctx.strokeStyle = "#FFFFFF";
+            ctx.lineWidth = 4;
+            ctx.strokeText(`${z}Z`, 8, p1.y - 6);
+            
+            ctx.fillStyle = "#000000";
+            ctx.fillText(`${z}Z`, 8, p1.y - 6);
+            
+            // Restore grid stroke style for subsequent lines
+            ctx.strokeStyle = "#E5E5E5";
+            ctx.lineWidth = 1;
         }
     }
 
