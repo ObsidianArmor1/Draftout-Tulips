@@ -6,10 +6,10 @@
     <title>Minecraft 26.1.1: Tulip Fields Coordinate Map</title>
     <link rel="stylesheet" href="style.css">
     <script>
-        // Apply saved theme immediately before first paint to prevent flash
+        // Apply saved theme immediately before first paint (dark is the default)
         (function() {
             const saved = localStorage.getItem('tulipmap-theme');
-            if (saved === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+            if (saved !== 'light') document.documentElement.setAttribute('data-theme', 'dark');
         })();
     </script>
 </head>
@@ -27,9 +27,9 @@
                 <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode">☀</button>
             </header>
 
-            <!-- Player Coordinate Tracker -->
+            <!-- Find Closest Patches -->
             <section class="panel-section">
-                <h2>📍 Player Tracking</h2>
+                <h2>📍 Find Closest Patches</h2>
                 <div class="input-group">
                     <div class="field">
                         <label for="player-x">Player X</label>
