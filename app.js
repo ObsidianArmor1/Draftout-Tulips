@@ -266,21 +266,24 @@ function drawMap() {
             const pField = toPixel(field.closestX, field.closestZ); // Point to exact closest block!
             
             // Visual weight hierarchy: closer = thicker, darker, and more prominent dashed line!
-            let opacity, lineWidth;
+            let opacity, lineWidth, dashPattern;
             if (i === 0) {
-                lineWidth = 4.5;
-                opacity = 0.95;
+                lineWidth = 2.5;
+                opacity = 0.90;
+                dashPattern = [6, 6];
             } else if (i === 1) {
-                lineWidth = 3.0;
-                opacity = 0.70;
+                lineWidth = 1.6;
+                opacity = 0.60;
+                dashPattern = [5, 5];
             } else {
-                lineWidth = 1.8;
-                opacity = 0.45;
+                lineWidth = 1.0;
+                opacity = 0.35;
+                dashPattern = [4, 4];
             }
             
-            ctx.strokeStyle = `rgba(0, 0, 0, ${opacity})`;
+            ctx.strokeStyle = `rgba(50, 50, 50, ${opacity})`;
             ctx.lineWidth = lineWidth;
-            ctx.setLineDash([4, 4]); // Clean 4px dashed lines
+            ctx.setLineDash(dashPattern); // Clean, proportional dashed lines
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(pField.x, pField.y);
@@ -503,7 +506,10 @@ function updateClosestPatchesUI() {
         card.addEventListener("click", (e) => {
             e.stopPropagation();
             const coordText = `${field.closestX} ${field.closestZ}`;
-            navigator.clipboard.writeText(coordText).then(() => {
+            const copyContent = field.dist > 0 
+                ? `${coordText} (Direction: ${directionAbbr}, Angle: ${angleText}°)`
+                : coordText;
+            navigator.clipboard.writeText(copyContent).then(() => {
                 hudTrackingLabel.textContent = "COPIED TO CLIPBOARD";
                 hudTrackingVal.textContent = coordText;
                 hudTrackingContainer.classList.add("active");
